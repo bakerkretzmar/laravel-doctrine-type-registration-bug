@@ -1,0 +1,28 @@
+name: Run Tests
+on: [push]
+jobs:
+    tests:
+        name: PHP 8.0
+        runs-on: ubuntu-latest
+        services:
+            postgres:
+                image: postgres
+                env:
+                    POSTGRES_DB: forge
+                    POSTGRES_USER: forge
+                    POSTGRES_PASSWORD: password
+                ports:
+                    - 5432:5432
+                options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+        steps:
+            - uses: actions/checkout@v2
+            - uses: shivammathur/setup-php@v2
+              with:
+                  php-version: 8.0
+            - run: cp .env.example .env
+            - run: composer update --prefer-dist --optimize-autoloader --no-interaction --no-progress
+            - run: php artisan key:generate
+            - run: vendor/bin/phpunit --testdox
+              env:
+                  DB_CONNECTION: pgsql
+                  DB_PASSWORD: password
