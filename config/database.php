@@ -1,5 +1,6 @@
 <?php
 
+use App\Support\XmlType;
 use Illuminate\Support\Str;
 
 return [
@@ -142,6 +143,12 @@ return [
             'database' => env('REDIS_CACHE_DB', '1'),
         ],
 
+    ],
+
+    'dbal' => [
+        'types' => [
+            'xml' => XmlType::class,
+        ],
     ],
 
 ];
